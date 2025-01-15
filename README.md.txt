@@ -1,35 +1,31 @@
-## ***About me***
-![profile-views](https://komarev.com/ghpvc/?username=cawtoz&color=ff7b72&style=flat)
-```kotlin
-data class Developer(
-    val name: String,
-    val alias: String,
-    val portfolio: String
-)
+# ¡Hola! Soy Masas Maria Ortega 👩‍💻
 
-fun main() {
+### Estudiante de ingeniería en sistemas 💻✨
+Soy apasionada por la programación, el desarrollo web y móvil. Aquí puedes ver algunos de mis proyectos destacados y herramientas que utilizo.
 
-    val cawtoz = Developer(
-        name = "Carlos Torres",
-        alias = "cawtoz",
-        portfolio = "https://cawtoz.dev/"
-    )
+---
 
-    print(cawtoz)
+### 🔧 Herramientas y Tecnologías
+<div align="center">
+  <img src="https://skillicons.dev/icons?i=html,css,js,php,python,dart,flutter" alt="Herramientas" />
+</div>
 
-}
-```
+---
 
-<a href="https://github.com/cawtoz">
-    <img height=192 src="https://github-readme-stats.vercel.app/api?username=cawtoz&show_icons=true&title_color=ff7b72&bg_color=161b22&hide_border=true&icon_color=a5d6ff&text_color=e6eddf" />
-    <img height=192 align="right" src="https://github-readme-stats.vercel.app/api/top-langs/?username=cawtoz&layout=compact&title_color=ff7b72&bg_color=161b22&hide_border=true&text_color=e6eddf&hide=javascript,c++,less,scss,blade,php,hack" />  
-</a>
+### 📊 Mis estadísticas en GitHub:
+<div align="center">
+  <img src="https://github-readme-stats.vercel.app/api?username=masamasa28&show_icons=true&theme=radical" alt="Stats" />
+  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=masamasa28&layout=compact&theme=radical" alt="Lenguajes más usados" />
+</div>
 
-## ***Tools***
-<a href="https://github.com/cawtoz">
-    <img width=100% src="https://skillicons.dev/icons?i=kotlin,java,typescript,mongodb,postgresql,git,html,css,astro,idea,vscode"/>
-</a>
+---
 
-<a href="https://github.com/cawtoz">
-    <img width=100% src="https://github.com/cawtoz/cawtoz/blob/output/github-contribution-grid-snake-dark.svg"/>
-</a>
+### 📂 Proyectos destacados
+- [**Aplicación de Objetos Perdidos**](https://github.com/masamasa28/aplicacionObjetosPerdidos) - Aplicación móvil en Dart para objetos perdidos.
+- [**Inventario Maria Ortega**](https://github.com/masamasa28/inventariomariaortega) - Sistema de inventarios con credenciales en PHP.
+- [**Página Dinosaurios**](https://github.com/masamasa28/PaginaDInosaurios) - Sitio web HTML/CSS sobre dinosaurios.
+
+---
+
+### 📅 Contribuciones recientes
+![Contribuciones](https://github-readme-streak-stats.herokuapp.com?user=masamasa28&theme=radical)
