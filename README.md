@@ -7,7 +7,7 @@ Soy apasionada por la programación, el desarrollo web y móvil. Aquí puedes ve
 
 ### 🔧 Herramientas y Tecnologías
 <div align="center">
-  <img src="https://skillicons.dev/icons?i=html,css,js,php,python,dart,flutterkotlin,java,typescript,vscode" alt="Herramientas" />
+  <img src="https://skillicons.dev/icons?i=html,css,js,php,python,dart,flutter,kotlin,java,typescript,vscode" alt="Herramientas" />
 </a>
 ---
 
