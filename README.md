@@ -20,12 +20,6 @@ Soy apasionada por la programación, el desarrollo web y móvil. Aquí puedes ve
 
 ---
 
-### 📂 Proyectos destacados
-- [**Aplicación de Objetos Perdidos**](https://github.com/masamasa28/aplicacionObjetosPerdidos) - Aplicación móvil en Dart para objetos perdidos.
-- [**Inventario Maria Ortega**](https://github.com/masamasa28/inventariomariaortega) - Sistema de inventarios con credenciales en PHP.
-- [**Página Dinosaurios**](https://github.com/masamasa28/PaginaDInosaurios) - Sitio web HTML/CSS sobre dinosaurios.
-
----
-
-### 📅 Contribuciones recientes
-![Contribuciones](https://github-readme-streak-stats.herokuapp.com?user=masamasa28&theme=radical)
+<div align="center">
+  <img src="https://cataas.com/cat/gif" alt="Gato jugando" width="300"/>
+</div>
