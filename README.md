@@ -8,8 +8,11 @@ Soy apasionada por la programación, el desarrollo web y móvil. Aquí puedes ve
 ### 🔧 Herramientas y Tecnologías
 <div align="center">
   <img src="https://skillicons.dev/icons?i=html,css,js,php,python,dart,flutter" alt="Herramientas" />
-</div>
 
+    <img width=100% src="https://skillicons.dev/icons?i=kotlin,java,typescript,mongodb,postgresql,git,html,css,astro,idea,vscode"/>
+
+    <img width=100% src="https://github.com/cawtoz/cawtoz/blob/output/github-contribution-grid-snake-dark.svg"/>
+</a>
 ---
 
 ### 📊 Mis estadísticas en GitHub:
