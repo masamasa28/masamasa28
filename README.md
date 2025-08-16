@@ -6,12 +6,6 @@ Aquí encontrarás algunos de mis proyectos y las tecnologías que utilizo.
 
 ---
 
-### ⚡ Tecnologías y Herramientas  
-<div align="center">
-  <img src="https://skillicons.dev/icons?i=html,css,js,ts,php,python,java,dart,flutter,laravel,filament,firebase,docker,vscode" alt="Tecnologías" />
-</div>  
-
----
 
 ### 📈 Estadísticas en GitHub  
 <div align="center">
@@ -20,8 +14,7 @@ Aquí encontrarás algunos de mis proyectos y las tecnologías que utilizo.
 </div>  
 
 ---
-
-### 🐱 Bonus  
+ 
 <div align="center">
   <img src="https://cataas.com/cat/gif" alt="Gatito divertido" width="250"/>
 </div>
