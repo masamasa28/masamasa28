@@ -57,8 +57,6 @@ jobs:
             exit(1)
 
         all_repos = repos_response.json()
-
-        # Filtrar repositorios reales
         real_repos = []
         odoo_detected = False
         languages = Counter()
@@ -86,7 +84,7 @@ jobs:
                                 if any(x in filename for x in ['__manifest__.py', '__openerp__.py', 'odoo.conf', 'addons']):
                                     odoo_detected = True
 
-        # Generar tech_stack.md
+        # ==== TECH STACK ====
         tech_badges = {
             'Python': '![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)',
             'JavaScript': '![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)',
@@ -107,24 +105,60 @@ jobs:
             'Dockerfile': '![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)'
         }
 
-        if not languages:
-            tech_stack_content = "### **🔍 Tecnologías Detectadas**\n*Esta sección se actualiza automáticamente cada 24 horas*\n\n🤔 **Aún no se detectaron tecnologías**\n"
-        else:
-            tech_stack_content = "### **🛠️ Stack Tecnológico**\n*Actualizado automáticamente basado en tus repositorios*\n\n"
-            if odoo_detected:
-                tech_stack_content += "![Odoo](https://img.shields.io/badge/Odoo-714B67?style=for-the-badge&logo=odoo&logoColor=white)\n"
-            for lang in languages:
-                if lang in tech_badges:
-                    tech_stack_content += tech_badges[lang] + "\n"
-            tech_stack_content += f"\n**📊 Repositorios analizados:** {len(real_repos)}\n"
-            if odoo_detected:
-                tech_stack_content += "**🎯 Desarrollo Odoo detectado automáticamente**\n"
+        tech_stack_content = "### **🛠️ Stack Tecnológico**\n*Actualizado automáticamente*\n\n"
+        if odoo_detected:
+            tech_stack_content += "![Odoo](https://img.shields.io/badge/Odoo-714B67?style=for-the-badge&logo=odoo&logoColor=white)\n"
+        for lang in languages:
+            if lang in tech_badges:
+                tech_stack_content += tech_badges[lang] + "\n"
+        tech_stack_content += f"\n**📊 Repositorios analizados:** {len(real_repos)}\n"
+        if odoo_detected:
+            tech_stack_content += "**🎯 Desarrollo Odoo detectado automáticamente**\n"
 
         with open("tech_stack.md", "w", encoding="utf-8") as f:
             f.write(tech_stack_content)
 
-        # Aquí puedes repetir la lógica para repo_analysis.md y featured_repos.md
-        # Como en tu script original
+        # ==== REPO ANALYSIS ====
+        repo_analysis = "### **📂 Tus Repositorios Recientes**\n"
+        repo_analysis += f"*Actualizado: {datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')} UTC*\n\n"
+        repo_analysis += "| Repositorio | Lenguaje | Última Actividad | Tamaño |\n"
+        repo_analysis += "|-------------|----------|-----------------|--------|\n"
+        for repo in real_repos[:6]:
+            name = repo['name']
+            language = repo['language'] or 'N/A'
+            updated = datetime.strptime(repo['updated_at'], '%Y-%m-%dT%H:%M:%SZ')
+            days_ago = (datetime.utcnow() - updated).days
+            size_kb = repo['size']
+            size_str = f"{size_kb} KB" if size_kb < 1024 else f"{size_kb//1024} MB"
+            time_str = "hoy" if days_ago==0 else f"{days_ago}d"
+            repo_analysis += f"| [{name}]({repo['html_url']}) | {language} | {time_str} | {size_str} |\n"
+
+        with open("repo_analysis.md", "w", encoding="utf-8") as f:
+            f.write(repo_analysis)
+
+        # ==== FEATURED REPOS ====
+        scored_repos = []
+        for repo in real_repos:
+            updated = datetime.strptime(repo['updated_at'], '%Y-%m-%dT%H:%M:%SZ')
+            days_ago = (datetime.utcnow() - updated).days
+            score = repo['stargazers_count']*10 + (30 - min(days_ago,30))
+            scored_repos.append((repo, score))
+        scored_repos.sort(key=lambda x:x[1], reverse=True)
+
+        featured_repos = "### **🌟 Proyectos Destacados**\n\n"
+        for i,(repo,score) in enumerate(scored_repos[:3],1):
+            name = repo['name']
+            language = repo['language'] or 'Varios'
+            stars = repo['stargazers_count']
+            forks = repo['forks_count']
+            description = repo['description'] or 'Proyecto personal'
+            updated = datetime.strptime(repo['updated_at'], '%Y-%m-%dT%H:%M:%SZ')
+            days_ago = (datetime.utcnow() - updated).days
+            time_str = "hoy" if days_ago==0 else f"hace {days_ago}d"
+            featured_repos += f"{i}. **[{name}]({repo['html_url']})**\n   - **Lenguaje:** {language} | ⭐ {stars} | 🍴 {forks}\n   - {description}\n   - *Actualizado: {time_str}*\n\n"
+
+        with open("featured_repos.md","w",encoding="utf-8") as f:
+            f.write(featured_repos)
 
         print("✅ Estadísticas generadas correctamente")
         EOF
@@ -137,29 +171,26 @@ jobs:
 
         with open('README.md', 'r', encoding='utf-8') as f:
             content = f.read()
-
         with open('tech_stack.md', 'r', encoding='utf-8') as f:
             tech_stack = f.read()
+        with open('repo_analysis.md', 'r', encoding='utf-8') as f:
+            repo_analysis = f.read()
+        with open('featured_repos.md', 'r', encoding='utf-8') as f:
+            featured_repos = f.read()
 
-        # Reemplazar sección tech_stack
-        content = re.sub(
-            r'<!-- START_SECTION:tech_stack -->.*?<!-- END_SECTION:tech_stack -->',
-            f'<!-- START_SECTION:tech_stack -->\n{tech_stack}<!-- END_SECTION:tech_stack -->',
-            content,
-            flags=re.DOTALL
-        )
+        content = re.sub(r'<!-- START_SECTION:tech_stack -->.*?<!-- END_SECTION:tech_stack -->',
+                         f'<!-- START_SECTION:tech_stack -->\n{tech_stack}<!-- END_SECTION:tech_stack -->', content, flags=re.DOTALL)
+        content = re.sub(r'<!-- START_SECTION:repo_analysis -->.*?<!-- END_SECTION:repo_analysis -->',
+                         f'<!-- START_SECTION:repo_analysis -->\n{repo_analysis}<!-- END_SECTION:repo_analysis -->', content, flags=re.DOTALL)
+        content = re.sub(r'<!-- START_SECTION:featured_repos -->.*?<!-- END_SECTION:featured_repos -->',
+                         f'<!-- START_SECTION:featured_repos -->\n{featured_repos}<!-- END_SECTION:featured_repos -->', content, flags=re.DOTALL)
 
-        # Actualizar timestamp
         timestamp = datetime.utcnow().strftime('%d/%m/%Y - %H:%M UTC')
-        content = re.sub(
-            r'\*Última actualización automática:.*?\*',
-            f'*Última actualización automática: {timestamp}*',
-            content
-        )
+        content = re.sub(r'\*Última actualización automática:.*?\*',
+                         f'*Última actualización automática: {timestamp}*', content)
 
         with open('README.md', 'w', encoding='utf-8') as f:
             f.write(content)
-
         print("✅ README actualizado correctamente")
         EOF
 
@@ -171,7 +202,6 @@ jobs:
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git add README.md
-        
         if git diff --staged --quiet; then
           echo "No hay cambios en el README"
         else
