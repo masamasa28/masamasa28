@@ -191,6 +191,6 @@ jobs:
           echo "No hay cambios en el README"
         else
           git commit -m "🤖 Auto-update README.md with latest stats (públicos)"
-          git push
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:main
           echo "✅ README actualizado y enviado al repositorio"
         fi
