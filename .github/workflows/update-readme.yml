@@ -1,0 +1,335 @@
+name: 🤖 Auto-Update Profile README
+
+on:
+  schedule:
+    # Ejecutar cada día a las 6:00 AM UTC
+    - cron: '0 6 * * *'
+  workflow_dispatch: # Permite ejecutar manualmente
+  push:
+    branches: [ main ]
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    name: Update README with latest activity
+
+    steps:
+    - name: 🚀 Checkout
+      uses: actions/checkout@v4
+
+    - name: 🐍 Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: 📦 Install dependencies
+      run: |
+        pip install requests PyGithub python-dotenv
+
+    - name: 📊 Generate repository stats
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        python << 'EOF'
+        import os
+        import requests
+        from datetime import datetime, timedelta
+        import json
+        from collections import Counter
+
+        # Configuración
+        username = "masamasa28"  # Tu username de GitHub
+        token = os.environ.get('GITHUB_TOKEN')
+        
+        headers = {
+            'Authorization': f'token {token}',
+            'Accept': 'application/vnd.github.v3+json'
+        }
+
+        print("🔍 Obteniendo datos de tus repositorios...")
+        
+        # Obtener TODOS los repositorios (públicos y privados si tienes acceso)
+        repos_url = f"https://api.github.com/users/{username}/repos?per_page=100&sort=updated"
+        repos_response = requests.get(repos_url, headers=headers)
+        
+        if repos_response.status_code != 200:
+            print(f"❌ Error obteniendo repositorios: {repos_response.status_code}")
+            exit(1)
+        
+        all_repos = repos_response.json()
+        
+        # Filtrar solo repositorios que NO sean forks Y que tengan commits reales
+        real_repos = []
+        for repo in all_repos:
+            if not repo['fork'] and repo['size'] > 0:  # size > 0 indica que tiene contenido
+                # Verificar si el repositorio tiene commits del usuario
+                commits_url = f"https://api.github.com/repos/{repo['full_name']}/commits"
+                commits_response = requests.get(commits_url, headers=headers)
+                if commits_response.status_code == 200:
+                    commits_data = commits_response.json()
+                    if commits_data:  # Si tiene commits
+                        real_repos.append(repo)
+                        print(f"✅ Repositorio encontrado: {repo['name']} ({repo['language'] or 'N/A'})")
+        
+        print(f"📊 Total de repositorios reales encontrados: {len(real_repos)}")
+        
+        # Ordenar por última actualización
+        real_repos.sort(key=lambda x: x['updated_at'], reverse=True)
+
+        # Generar estadísticas de lenguajes REALES
+        languages = Counter()
+        odoo_detected = False
+        
+        for repo in real_repos:
+            lang_url = repo['languages_url']
+            lang_response = requests.get(lang_url, headers=headers)
+            if lang_response.status_code == 200:
+                repo_languages = lang_response.json()
+                for lang, bytes_count in repo_languages.items():
+                    languages[lang] += bytes_count
+                
+                # Detectar si hay archivos relacionados con Odoo
+                contents_url = f"https://api.github.com/repos/{repo['full_name']}/contents"
+                contents_response = requests.get(contents_url, headers=headers)
+                if contents_response.status_code == 200:
+                    files = contents_response.json()
+                    for file_item in files:
+                        if isinstance(file_item, dict) and 'name' in file_item:
+                            filename = file_item['name'].lower()
+                            if any(odoo_indicator in filename for odoo_indicator in ['__manifest__.py', '__openerp__.py', 'odoo.conf', 'addons']):
+                                odoo_detected = True
+                                print(f"🎯 Odoo detectado en: {repo['name']}")
+                                break
+
+        # Calcular porcentajes
+        total_bytes = sum(languages.values())
+        lang_percentages = {}
+        if total_bytes > 0:
+            for lang, bytes_count in languages.most_common():
+                percentage = (bytes_count / total_bytes) * 100
+                lang_percentages[lang] = percentage
+
+        # Generar badges de tecnologías basados en lo que realmente tienes
+        tech_badges = {
+            'Python': '![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)',
+            'JavaScript': '![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)',
+            'PHP': '![PHP](https://img.shields.io/badge/PHP-777BB4?style=for-the-badge&logo=php&logoColor=white)',
+            'Java': '![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)',
+            'HTML': '![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)',
+            'CSS': '![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)',
+            'TypeScript': '![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)',
+            'Vue': '![Vue.js](https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vue.js&logoColor=4FC08D)',
+            'C++': '![C++](https://img.shields.io/badge/C++-00599C?style=for-the-badge&logo=cplusplus&logoColor=white)',
+            'C': '![C](https://img.shields.io/badge/C-00599C?style=for-the-badge&logo=c&logoColor=white)',
+            'Dart': '![Dart](https://img.shields.io/badge/Dart-0175C2?style=for-the-badge&logo=dart&logoColor=white)',
+            'Kotlin': '![Kotlin](https://img.shields.io/badge/Kotlin-0095D5?style=for-the-badge&logo=kotlin&logoColor=white)',
+            'Swift': '![Swift](https://img.shields.io/badge/Swift-FA7343?style=for-the-badge&logo=swift&logoColor=white)',
+            'Go': '![Go](https://img.shields.io/badge/Go-00ADD8?style=for-the-badge&logo=go&logoColor=white)',
+            'Rust': '![Rust](https://img.shields.io/badge/Rust-000000?style=for-the-badge&logo=rust&logoColor=white)',
+            'Shell': '![Shell](https://img.shields.io/badge/Shell-89E051?style=for-the-badge&logo=gnu-bash&logoColor=white)',
+            'Dockerfile': '![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)'
+        }
+
+        # Crear contenido para tech stack basado en repositorios reales
+        if not languages:
+            tech_stack_content = "### **🔍 Tecnologías Detectadas**\n"
+            tech_stack_content += "*Esta sección se actualiza automáticamente cada 24 horas*\n\n"
+            tech_stack_content += "🤔 **Aún no se detectaron tecnologías en tus repositorios**\n\n"
+            tech_stack_content += "💡 **Tip**: Cuando subas código con commits, aparecerán aquí automáticamente.\n"
+        else:
+            tech_stack_content = "### **🛠️ Stack Tecnológico**\n"
+            tech_stack_content += "*Actualizado automáticamente basado en tus repositorios*\n\n"
+            
+            # Agregar badge de Odoo si fue detectado
+            if odoo_detected:
+                tech_stack_content += "![Odoo](https://img.shields.io/badge/Odoo-714B67?style=for-the-badge&logo=odoo&logoColor=white)\n"
+            
+            # Agregar otros badges basados en lenguajes reales
+            for lang in lang_percentages.keys():
+                if lang in tech_badges:
+                    tech_stack_content += tech_badges[lang] + "\n"
+            
+            tech_stack_content += f"\n**📊 Repositorios analizados:** {len(real_repos)}\n"
+            if odoo_detected:
+                tech_stack_content += "**🎯 Desarrollo Odoo detectado automáticamente**\n"
+
+        # Crear análisis de repositorios REALES
+        if not real_repos:
+            repo_analysis = "### **📂 Tus Repositorios**\n"
+            repo_analysis += f"*Actualizado: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} UTC*\n\n"
+            repo_analysis += "🌱 **Aún no tienes repositorios con código propio**\n\n"
+            repo_analysis += "Cuando subas tu primer proyecto:\n"
+            repo_analysis += "- Aparecerá aquí automáticamente\n"
+            repo_analysis += "- Se analizarán los lenguajes usados\n"
+            repo_analysis += "- Se mostrarán estadísticas de actividad\n\n"
+        else:
+            repo_analysis = "### **📂 Tus Repositorios Recientes**\n"
+            repo_analysis += f"*Actualizado: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} UTC*\n\n"
+            repo_analysis += "| Repositorio | Lenguaje | Última Actividad | Tamaño |\n"
+            repo_analysis += "|-------------|----------|------------------|--------|\n"
+
+            for repo in real_repos[:6]:  # Mostrar hasta 6 repositorios
+                name = repo['name']
+                language = repo['language'] or 'N/A'
+                updated = datetime.strptime(repo['updated_at'], '%Y-%m-%dT%H:%M:%SZ')
+                days_ago = (datetime.now() - updated).days
+                size_kb = repo['size']
+                
+                # Convertir tamaño a formato legible
+                if size_kb < 1024:
+                    size_str = f"{size_kb} KB"
+                else:
+                    size_str = f"{size_kb // 1024} MB"
+                
+                # Formato de tiempo más natural
+                if days_ago == 0:
+                    time_str = "hoy"
+                elif days_ago == 1:
+                    time_str = "ayer"
+                elif days_ago <= 7:
+                    time_str = f"{days_ago}d"
+                elif days_ago <= 30:
+                    weeks = days_ago // 7
+                    time_str = f"{weeks}sem"
+                else:
+                    months = days_ago // 30
+                    time_str = f"{months}m"
+                
+                repo_analysis += f"| [{name}]({repo['html_url']}) | {language} | {time_str} | {size_str} |\n"
+
+            # Crear distribución de lenguajes
+            if languages:
+                repo_analysis += "\n### **📊 Distribución de Lenguajes**\n```\n"
+                max_languages = min(5, len(lang_percentages))  # Máximo 5 lenguajes
+                for lang, percentage in list(lang_percentages.items())[:max_languages]:
+                    bar_length = max(1, int(percentage / 5))  # Mínimo 1 para que se vea
+                    bar = "█" * bar_length + "░" * (20 - bar_length)
+                    repo_analysis += f"{lang:<15} {bar} {percentage:.1f}%\n"
+                repo_analysis += "```\n"
+
+        # Crear sección de proyectos destacados
+        if not real_repos:
+            featured_repos = "### **🚀 Tus Proyectos**\n\n"
+            featured_repos += "🌱 **¡Tu primera contribución será genial!**\n\n"
+            featured_repos += "Cuando subas tu primer proyecto, aparecerá automáticamente aquí con:\n"
+            featured_repos += "- 📊 Estadísticas reales (stars, forks)\n"
+            featured_repos += "- 🏷️ Lenguajes detectados automáticamente\n"
+            featured_repos += "- 📅 Actividad de commits\n"
+            featured_repos += "- 🔗 Enlaces directos\n\n"
+        else:
+            featured_repos = "### **🌟 Proyectos Destacados**\n\n"
+            
+            # Ordenar por estrellas y actividad
+            scored_repos = []
+            for repo in real_repos:
+                updated = datetime.strptime(repo['updated_at'], '%Y-%m-%dT%H:%M:%SZ')
+                days_ago = (datetime.now() - updated).days
+                score = repo['stargazers_count'] * 10 + (30 - min(days_ago, 30))
+                scored_repos.append((repo, score))
+            
+            scored_repos.sort(key=lambda x: x[1], reverse=True)
+            
+            for i, (repo, score) in enumerate(scored_repos[:3], 1):  # Top 3
+                name = repo['name']
+                language = repo['language'] or 'Varios'
+                stars = repo['stargazers_count']
+                forks = repo['forks_count']
+                description = repo['description'] or 'Proyecto personal'
+                
+                updated = datetime.strptime(repo['updated_at'], '%Y-%m-%dT%H:%M:%SZ')
+                days_ago = (datetime.now() - updated).days
+                
+                if days_ago == 0:
+                    time_str = "hoy"
+                elif days_ago == 1:
+                    time_str = "ayer"
+                elif days_ago <= 7:
+                    time_str = f"hace {days_ago}d"
+                elif days_ago <= 30:
+                    weeks = days_ago // 7
+                    time_str = f"hace {weeks}sem"
+                else:
+                    months = days_ago // 30
+                    time_str = f"hace {months}m"
+                
+                featured_repos += f"{i}. **[{name}]({repo['html_url']})**\n"
+                featured_repos += f"   - **Lenguaje:** {language} | ⭐ {stars} | 🍴 {forks}\n"
+                featured_repos += f"   - {description}\n"
+                featured_repos += f"   - *Actualizado: {time_str}*\n\n"
+
+        # Guardar en archivos temporales
+        with open('tech_stack.md', 'w', encoding='utf-8') as f:
+            f.write(tech_stack_content)
+        
+        with open('repo_analysis.md', 'w', encoding='utf-8') as f:
+            f.write(repo_analysis)
+        
+        with open('featured_repos.md', 'w', encoding='utf-8') as f:
+            f.write(featured_repos)
+
+        print("✅ Estadísticas generadas correctamente")
+        EOF
+
+    - name: 📝 Update README sections
+      run: |
+        python << 'EOF'
+        import re
+        from datetime import datetime
+
+        # Leer el README actual
+        with open('README.md', 'r', encoding='utf-8') as f:
+            content = f.read()
+
+        # Leer los nuevos contenidos
+        with open('tech_stack.md', 'r', encoding='utf-8') as f:
+            tech_stack = f.read()
+
+        with open('repo_analysis.md', 'r', encoding='utf-8') as f:
+            repo_analysis = f.read()
+
+        with open('featured_repos.md', 'r', encoding='utf-8') as f:
+            featured_repos = f.read()
+
+        # Reemplazar secciones
+        # Tech stack
+        pattern = r'<!-- START_SECTION:tech_stack -->.*?<!-- END_SECTION:tech_stack -->'
+        replacement = f'<!-- START_SECTION:tech_stack -->\n{tech_stack}<!-- END_SECTION:tech_stack -->'
+        content = re.sub(pattern, replacement, content, flags=re.DOTALL)
+
+        # Repo analysis
+        pattern = r'<!-- START_SECTION:repo_analysis -->.*?<!-- END_SECTION:repo_analysis -->'
+        replacement = f'<!-- START_SECTION:repo_analysis -->\n{repo_analysis}<!-- END_SECTION:repo_analysis -->'
+        content = re.sub(pattern, replacement, content, flags=re.DOTALL)
+
+        # Featured repos
+        pattern = r'<!-- START_SECTION:featured_repos -->.*?<!-- END_SECTION:featured_repos -->'
+        replacement = f'<!-- START_SECTION:featured_repos -->\n{featured_repos}<!-- END_SECTION:featured_repos -->'
+        content = re.sub(pattern, replacement, content, flags=re.DOTALL)
+
+        # Actualizar timestamp
+        timestamp = datetime.now().strftime('%d/%m/%Y - %H:%M UTC')
+        content = re.sub(r'\*Última actualización automática:.*?\*', f'*Última actualización automática: {timestamp}*', content)
+
+        # Guardar README actualizado
+        with open('README.md', 'w', encoding='utf-8') as f:
+            f.write(content)
+
+        print("✅ README actualizado correctamente")
+        EOF
+
+    - name: 🧹 Cleanup temporary files
+      run: rm -f tech_stack.md repo_analysis.md featured_repos.md
+
+    - name: 💾 Commit and push if changed
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add README.md
+        
+        if git diff --staged --quiet; then
+          echo "No hay cambios en el README"
+        else
+          git commit -m "🤖 Auto-update README.md with latest stats"
+          git push
+          echo "✅ README actualizado y enviado al repositorio"
+        fi
