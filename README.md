@@ -12,12 +12,16 @@ Aquí encontrarás algunos de mis proyectos y las tecnologías que utilizo.
   <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=masamasa28&layout=compact&theme=tokyonight&hide_border=true" height="160" alt="Lenguajes"/>  
 </div>  
 
-### 🔥 Detalles destacados
-- ⭐ **Total de estrellas:** 0  
-- 💾 **Commits (2023):** 54  
-- 🔄 **Pull Requests:** 0  
-- 🐛 **Issues reportados:** 0  
-- 🤝 **Repos contribuidos:** 1  
+### 📊 Estadísticas anuales
+
+| Métrica               | 2023       | 2024       | 2025       |
+|-----------------------|------------|------------|------------|
+| ⭐ **Estrellas**      | 0          | -          | -          |
+| 💾 **Commits**       | 54         | -          | -          |
+| 🔄 **Pull Requests** | 0          | -          | -          |
+| 🐛 **Issues**        | 0          | -          | -          |
+| 🤝 **Contribuciones**| 1          | -          | -          |
+
 
 ### 💻 Lenguajes más usados  
 - PHP 51.10%  
