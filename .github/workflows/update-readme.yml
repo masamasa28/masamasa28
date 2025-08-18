@@ -1,4 +1,4 @@
-name: 🤖 Auto-Update Profile README
+name: 🤖 Auto-Update Profile README (Público)
 
 on:
   schedule:
@@ -23,33 +23,21 @@ jobs:
 
     - name: 📦 Install dependencies
       run: |
-        pip install requests PyGithub python-dotenv
+        pip install requests
 
-    - name: 📊 Generate repository stats
-      env:
-        GITHUB_TOKEN: ${{ secrets.PERSONAL_TOKEN }}
+    - name: 📊 Generate repository stats (solo públicos)
       run: |
         python << 'EOF'
-        import os
         import requests
         from datetime import datetime
         from collections import Counter
 
         username = "masamasa28"
-        token = os.environ.get("GITHUB_TOKEN")
+        headers = {'Accept': 'application/vnd.github.v3+json'}
 
-        if not token:
-            print("❌ El token no está definido")
-            exit(1)
+        print("🔍 Obteniendo repositorios públicos...")
 
-        headers = {
-            'Authorization': f'token {token}',
-            'Accept': 'application/vnd.github.v3+json'
-        }
-
-        print("🔍 Obteniendo datos de tus repositorios...")
-
-        repos_url = "https://api.github.com/user/repos?per_page=100&sort=updated"
+        repos_url = f"https://api.github.com/users/{username}/repos?per_page=100&sort=updated"
         repos_response = requests.get(repos_url, headers=headers)
 
         if repos_response.status_code != 200:
@@ -63,26 +51,23 @@ jobs:
 
         for repo in all_repos:
             if not repo['fork'] and repo['size'] > 0:
-                commits_url = f"https://api.github.com/repos/{repo['full_name']}/commits"
-                commits_response = requests.get(commits_url, headers=headers)
-                if commits_response.status_code == 200 and commits_response.json():
-                    real_repos.append(repo)
-                    print(f"✅ Repositorio encontrado: {repo['name']} ({repo['language'] or 'N/A'})")
+                real_repos.append(repo)
+                print(f"✅ Repositorio encontrado: {repo['name']} ({repo['language'] or 'N/A'})")
 
-                    # Analizar lenguajes
-                    lang_response = requests.get(repo['languages_url'], headers=headers)
-                    if lang_response.status_code == 200:
-                        for lang, count in lang_response.json().items():
-                            languages[lang] += count
+                # Analizar lenguajes
+                lang_response = requests.get(repo['languages_url'], headers=headers)
+                if lang_response.status_code == 200:
+                    for lang, count in lang_response.json().items():
+                        languages[lang] += count
 
-                    # Detectar Odoo
-                    contents_response = requests.get(f"https://api.github.com/repos/{repo['full_name']}/contents", headers=headers)
-                    if contents_response.status_code == 200:
-                        for file_item in contents_response.json():
-                            if isinstance(file_item, dict) and 'name' in file_item:
-                                filename = file_item['name'].lower()
-                                if any(x in filename for x in ['__manifest__.py', '__openerp__.py', 'odoo.conf', 'addons']):
-                                    odoo_detected = True
+                # Detectar Odoo
+                contents_response = requests.get(f"https://api.github.com/repos/{repo['full_name']}/contents", headers=headers)
+                if contents_response.status_code == 200:
+                    for file_item in contents_response.json():
+                        if isinstance(file_item, dict) and 'name' in file_item:
+                            filename = file_item['name'].lower()
+                            if any(x in filename for x in ['__manifest__.py', '__openerp__.py', 'odoo.conf', 'addons']):
+                                odoo_detected = True
 
         # ==== TECH STACK ====
         tech_badges = {
@@ -160,7 +145,7 @@ jobs:
         with open("featured_repos.md","w",encoding="utf-8") as f:
             f.write(featured_repos)
 
-        print("✅ Estadísticas generadas correctamente")
+        print("✅ Estadísticas públicas generadas correctamente")
         EOF
 
     - name: 📝 Update README sections
@@ -205,7 +190,7 @@ jobs:
         if git diff --staged --quiet; then
           echo "No hay cambios en el README"
         else
-          git commit -m "🤖 Auto-update README.md with latest stats"
+          git commit -m "🤖 Auto-update README.md with latest stats (públicos)"
           git push
           echo "✅ README actualizado y enviado al repositorio"
         fi
