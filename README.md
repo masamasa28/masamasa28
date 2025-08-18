@@ -1,49 +1,24 @@
-# Hola 🍀, soy masamasa28
+# ¡Hola! Soy Maria Ortega 👩‍💻
 
-Bienvenido a mi perfil de GitHub. Aquí podrás ver mis repositorios recientes, proyectos destacados y el stack tecnológico que utilizo.
-
-*Última actualización automática: 19/08/2025 - 06:00 UTC*
-
----
-
-<!-- START_SECTION:tech_stack -->
-### 🛠️ Stack Tecnológico
-*Actualizado automáticamente cada 24 horas*
-
-![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
-![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
-![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
-
-📊 Repositorios analizados: 5
-<!-- END_SECTION:tech_stack -->
+### Estudiante de ingeniería en sistemas 💻✨
+Soy apasionada por la programación, el desarrollo web y móvil. Aquí puedes ver algunos de mis proyectos destacados y herramientas que utilizo.
 
 ---
 
-<!-- START_SECTION:repo_analysis -->
-### 📂 Repositorios recientes
-*Actualizado: 2025-08-19 06:00:00 UTC*
+### 🔧 Herramientas y Tecnologías
+<div align="center">
+  <img src="https://skillicons.dev/icons?i=html,css,js,php,python,dart,flutter,java,typescript,vscode,firebase,laravel,filament,docker," alt="Herramientas" />
+</div>
+---
 
-| Repositorio | Lenguaje | Última Actividad | Tamaño |
-|------------|---------|----------------|--------|
-| [mi-proyecto](https://github.com/masamasa28/mi-proyecto) | Python | hoy | 256 KB |
-| [web-app](https://github.com/masamasa28/web-app) | HTML | 2d | 128 KB |
-| [data-tools](https://github.com/masamasa28/data-tools) | Python | 5d | 512 KB |
-<!-- END_SECTION:repo_analysis -->
+### 📊 Mis estadísticas en GitHub:
+<div align="center">
+  <img src="https://github-readme-stats.vercel.app/api?username=masamasa28&show_icons=true&theme=radical" alt="Stats" />
+  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=masamasa28&layout=compact&theme=radical" alt="Lenguajes más usados" />
+</div>
 
 ---
 
-### 📊 Estadísticas Públicas
-
-![Estadísticas de GitHub](https://github-readme-stats.vercel.app/api?username=masamasa28&show_icons=true&theme=default)
-
-![Lenguajes más usados](https://github-readme-stats.vercel.app/api/top-langs/?username=masamasa28&layout=compact)
-
----
-
-### 📫 Contacto
-
-- Twitter: [@tuusuario](https://twitter.com/tuusuario)
-- LinkedIn: [tuperfil](https://linkedin.com/in/tuperfil)
-- Email: tuemail@example.com
-
-⭐️ De [masamasa28](https://github.com/masamasa28)
+<div align="center">
+  <img src="https://cataas.com/cat/gif" alt="Gato jugando" width="300"/>
+</div>
