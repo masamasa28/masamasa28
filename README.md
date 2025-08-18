@@ -5,26 +5,7 @@ Apasionada por el **desarrollo full-stack** y las **tecnologías emergentes**. �
 
 ---
 
-## 📊 Dashboard de Actividad GitHub  
 
-<div align="center">
-  <img src="https://github-readme-stats.vercel.app/api?username=masamasa28&show_icons=true&theme=tokyonight&hide_border=true&include_all_commits=true" height="180" alt="Estadísticas"/>  
-  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=masamasa28&layout=compact&theme=tokyonight&hide_border=true&langs_count=6" height="180" alt="Lenguajes"/>
-  <img src="https://github-readme-streak-stats.herokuapp.com/?user=masamasa28&theme=tokyonight&hide_border=true" height="180" alt="Racha"/>
-</div>
-
-## 🔍 Detalles de Repositorios  
-```markdown
-![Repositorios](https://github-readme-stats.vercel.app/api/pin/?username=masamasa28&repo=TU_REPO_1&theme=tokyonight)
-![Repositorios](https://github-readme-stats.vercel.app/api/pin/?username=masamasa28&repo=TU_REPO_2&theme=tokyonight)
-```
-
-# 👋 ¡Hola! Soy **Maria Ortega**  
-
-### 🎓 Estudiante de Ingeniería en Sistemas  
-Apasionada por el **desarrollo full-stack** y las **tecnologías emergentes**. 🚀  
-
----
 
 ## 📊 Dashboard de Actividad GitHub  
 
